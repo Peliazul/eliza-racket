@@ -10,6 +10,9 @@ becomes
   (display (format "bye!\n))
 
 ' becomes \' in defs
+
+TODO:
+> weather -- something to do with dynsubs?
 |#
 
 (require "bot.rkt")
@@ -41,12 +44,17 @@ becomes
 (define-post-replacement my your)
 (define-post-replacement i\'m you are)
 
+;; TODO - do synonyms actually work?
+
+(define-synonyms (hello)
+  (hello hi hola howdy hiya))
+
 (define-synonyms (belief)
   (feel think believe wish))
 
 (define-synonyms (family)
   (family mother mom father dad sister brother wife children child 
-          uncle aunt grandma grandpa cousin))
+          uncle aunt grandma grandpa cousin mum))
 
 (define-synonyms (desire) 
   (want need))
