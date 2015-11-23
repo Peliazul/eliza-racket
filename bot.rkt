@@ -1,23 +1,19 @@
-(define-module (chatter bot)
-  #:export (respond-to
-            add-patterns!
-            add-synonyms!
-            add-replacement!)
-  #:export-syntax (define-keyword
-                    define-synonyms
-                    define-pre-replacement
-                    define-post-replacement
-                    define-dynamic-subst))
+#lang racket
 
-(use-modules (srfi srfi-1)
-             (ice-9 streams))
+#|
 
-(define *DYNAMIC-SUBSTITUTIONS* (make-hash-table 1024))
-(define *KEYWORD-WEIGHTS* (make-hash-table 1024))
-(define *KEYWORD-PATTERNS* (make-hash-table 1024))
-(define *WORD-SYNONYMS* (make-hash-table 1024))
-(define *POST-REPLACEMENTS* (make-hash-table 1024)) 
-(define *PRE-REPLACEMENTS* (make-hash-table 1024))
+Fixes
+(make-hash-table 1024) becomes (make-hash)
+(sort-list ...) becomes (sort ...)
+
+|#
+
+(define *DYNAMIC-SUBSTITUTIONS* (make-hash))
+(define *KEYWORD-WEIGHTS* (make-hash))
+(define *KEYWORD-PATTERNS* (make-hash))
+(define *WORD-SYNONYMS* (make-hash))
+(define *POST-REPLACEMENTS* (make-hash)) 
+(define *PRE-REPLACEMENTS* (make-hash))
 
 
 ;;;; TODO: turn this into a cycled stream
@@ -30,7 +26,7 @@
 
 ;;;; sort keys by their cadr
 (define (sort-list-cadr lofv cmpfn)
-  (sort-list lofv (lambda (x y) (cmpfn (cadr x) (cadr y)))))
+  (sort lofv (lambda (x y) (cmpfn (cadr x) (cadr y)))))
 
 
 ;;;; lookup all the keys in table, ignoring them if they aren't found.
@@ -39,7 +35,7 @@
              (accum '()))
     (if (null? keys)
         accum
-        (let ((f (hash-ref table (car keys))))
+        (let ((f (hash-ref table (car keys) #f)))
           (loop (cdr keys)
                 (if f
                     (cons (list (car keys) f) accum)
@@ -167,7 +163,7 @@
   (flatten 
    (map (compose pre-replace string->symbol)
         ;; TODO: better tokenization
-        (string-split m #\space))))
+        (string-split (string-downcase m)))))
 
 
 (define (post-process-msg w)
@@ -208,7 +204,8 @@
 
 
 ;;;; find the best match against words given the relevant keywords
-(define respond-to (compose post-process-msg (compose process pre-process-msg)))
+(define respond-to
+  (compose post-process-msg (compose process pre-process-msg)))
 
 
 (define (add-patterns! keyword patterns)
@@ -277,4 +274,18 @@
                     #'(begin
                         (define fname (lambda (arg ...) body ...))
                         (hash-set! *DYNAMIC-SUBSTITUTIONS* 'name fname)))))))
-                        
+
+
+(provide respond-to
+         add-patterns!
+         add-synonyms!
+         add-replacement!
+         define-keyword
+         define-synonyms
+         define-pre-replacement
+         define-post-replacement
+         define-dynamic-subst
+         ;; debug
+         pre-process-msg
+         post-process-msg
+         process)
