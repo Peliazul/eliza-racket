@@ -1,6 +1,9 @@
-Chatter Bot framework, inspired by Elizabot, for Guile
-------------------------------------------------------
+Eliza for Racket
+----------------
 
-There's probably some bugs, and some inconsistencies and stuff...
+Forked from Chatter Bot framework for Guile.
 
-(They'll probably never be fixed)
+Grab the code and load and run `eliza.rkt` in DrRacket, then
+enter `(main)` to run.
+
+
