@@ -2,6 +2,8 @@
 
 (require rackunit "bot.rkt")
 
+(define-pre-replacement maybe perhaps)
+
 (define-keyword (xnone)
   ((*)
    (A sentence for xnone)))
@@ -9,6 +11,16 @@
 (define-keyword (sorry)
   ((*)
    (Please don\'t apologise.)))
+
+(define-keyword (perhaps)
+  ((*)
+   (You don\'t seem quite certain.)))
+
+(define-keyword (was 2)
+  ((* was i *)
+   (What if you were (% 2) ?)))
+   
+;; -----------------------------------------------------------
 
 (test-case
  "pre-process-msg tests"
@@ -25,6 +37,13 @@
 (test-case
  "respond-to tests"
  (check-equal? (respond-to "apple and banana")
-               "A sentence for xnone"))
+               "A sentence for xnone")
  (check-equal? (respond-to "SORRY")
-               "Please don\'t apologise."))
+               "Please don't apologise.")
+ (check-equal? (respond-to "maybe I'm sick")
+               "You don't seem quite certain.")
+ (check-equal? (respond-to "perhaps I'm sick")
+               "You don't seem quite certain.")
+ (check-equal? (respond-to "was i asleep")
+               "What if you were asleep ?")
+ )
