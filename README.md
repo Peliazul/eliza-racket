@@ -6,11 +6,15 @@ Forked from Chatter Bot framework for Guile.
 Grab the code and load and run `eliza.rkt` in DrRacket, then
 enter `(main)` to run.
 
+Tests
+-----
+
+There are some unit tests in `bot-tests.rkt`
 
 Bugs
 ----
 
-There are lots, mostly because of my buggy translation
+There are some, probably because of my buggy translation
 from the Guile version.
 
 Examples...
@@ -19,9 +23,6 @@ you> weather
 . . hash-ref: no value found for key
   key: 'weather
 
-you> can you fly?
-. . format: contract violation
-  expected: string?
-  given: #f
-  argument position: 1st
-  other arguments.:
+
+
+Let me know any that you find, I might fix them.
