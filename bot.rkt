@@ -162,7 +162,6 @@ Fixes
 (define (pre-process-msg m)
   (flatten 
    (map (compose pre-replace string->symbol)
-        ;; TODO: better tokenization
         (string-split (string-downcase m)))))
 
 
