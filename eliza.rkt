@@ -117,11 +117,11 @@ TODO:
    (Do you think its likely that (% 2) ?)
    (Do you wish that (% 2) ?)
    (What do you know about (% 2) ?)
-   (Really, if (% 2) ?)))
+   (Really\, if (% 2) ?)))
 
 (define-keyword (dreamed 4)
   ((* i dreamed *)
-   (Really, (% 2) ?)
+   (Really\, (% 2) ?)
    (Have you ever fantasized (% 2) while you were awake ?)
    (Have you ever dreamed (% 2) before ?)
    (((goto dream)))))
@@ -144,29 +144,29 @@ TODO:
 (define-keyword (name 15)
   ((*)
    (I am not interested in names.)
-   (I\'ve told you before, I don\'t care about names -- please continue.)))
+   (I\'ve told you before\, I don\'t care about names -- please continue.)))
 
 (define-keyword (deutsch)
   ((*)
    ((goto xforeign))
-   (I told you before, I don\'t understand German.)))
+   (I told you before\, I don\'t understand German.)))
 
 (define-keyword (francais)
   ((*)
    ((goto xforeign))
-   (I told you before, I don\'t understand French.)))
+   (I told you before\, I don\'t understand French.)))
 
 
 (define-keyword (italiano)
   ((*)
    ((goto xforeign))
-   (I told you before, I don\'t understand Italian.)))
+   (I told you before\, I don\'t understand Italian.)))
 
 
 (define-keyword (espanol)
   ((*)
    ((goto xforeign))
-   (I told you before, I don\'t understand Spanish.)))
+   (I told you before\, I don\'t understand Spanish.)))
 
 
 (define-keyword (xforeign)
@@ -221,7 +221,7 @@ TODO:
    (Why are you concerned over my (% 2) ?)
    (What about your own (% 2) ?)
    (Are you worried about someone else\'s (% 2) ?)
-   (Really, my (% 2) ?)))
+   (Really\, my (% 2) ?)))
 
 
 (define-keyword (was 2)
@@ -314,13 +314,13 @@ TODO:
    (Why do you think I (% 2) you ?)
    (You like to think I (% 2) you -- don\'t you ?)
    (What makes you think I (% 2) you ?)
-   (Really, I (% 2) you ?)
+   (Really\, I (% 2) you ?)
    (Do you wish to believe I (% 2) you ?)
    (Suppose I did (% 2) you -- what would that mean ?)
    (Does someone else believe I (% 2) you ?))
   ((* you *)
    (We were discussing you -- not me.)
-   (Oh, I (% 2) ?)
+   (Oh\, I (% 2) ?)
    (You\'re not really talking about me -- are you ?)
    (What are your feelings now ?)))
 
@@ -412,14 +412,14 @@ TODO:
 
 (define-keyword (everyone 2)
   ((* (@ everyone) *)
-   (Realy, (% 2) ?)
+   (Realy\, (% 2) ?)
    (Surely not (% 2))
    (Can you think of anyone in particular ?)
-   (Who, for example?)
+   (Who\, for example?)
    (Are you thinking of a very special person ?)
-   (Who, may I ask ?)
+   (Who\, may I ask ?)
    (Someone special perhaps ?)
-   (You have a particular person in mind, don\'t you ?)
+   (You have a particular person in mind\, don\'t you ?)
    (Who do you think you\'re talking about ?)))
 
 
@@ -443,7 +443,7 @@ TODO:
    (Can you think of a specific example ?)
    (When ?)
    (What incident are you thinking of ?)
-   (Really, always ?)))
+   (Really\, always ?)))
 
 
 (define-keyword (alike 10)
@@ -453,7 +453,7 @@ TODO:
    (What does that similarity suggest to you ?)
    (What other connections do you see ?)
    (What do you suppose that resemblence means ?)
-   (What is the connection, do you suppose ?)
+   (What is the connection\, do you suppose ?)
    (Could here really be some connection ?)
    (How ?)))
 

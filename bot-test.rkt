@@ -19,6 +19,10 @@
 (define-keyword (was 2)
   ((* was i *)
    (What if you were (% 2) ?)))
+
+(define-keyword (you)
+  ((* you *)
+   (Oh\, I (% 2) ?)))
    
 ;; -----------------------------------------------------------
 
@@ -46,4 +50,6 @@
                "You don't seem quite certain.")
  (check-equal? (respond-to "was i asleep")
                "What if you were asleep ?")
+ (check-equal? (respond-to "you like noise")
+               "Oh, I like noise ?")
  )
