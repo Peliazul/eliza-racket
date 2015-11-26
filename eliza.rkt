@@ -481,3 +481,5 @@ TODO:
           (output (respond-to lin))
           (loop (get-input))))))
 
+
+(main)

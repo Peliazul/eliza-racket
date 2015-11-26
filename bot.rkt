@@ -1,5 +1,7 @@
 #lang racket
 
+(require unstable/debug)
+
 #|
 
 Fixes
@@ -55,6 +57,7 @@ Fixes
   (map car (sort-list-cadr (hash-ref-all weights words) >)))
 
 (define (synonyms-of base)
+  (debug base)
   (hash-ref *WORD-SYNONYMS* base '()))
 
 (define (post-replace x)
@@ -121,15 +124,15 @@ Fixes
       ;;                        "   frame: ~a\n======\n")
       ;;         pat dat collected frame)
       (cond
-       ((and (null? pat) (null? dat))
+       [(and (null? pat) (null? dat))
         ;; finished, so return frame
-        (reverse frame))
-       ((null? pat) #f) ;; we've got dat left unmatched
-       ((null? dat) ;; no dat left, but maybe pat is at a 
+        (reverse frame)]
+       [(null? pat) #f] ;; we've got dat left unmatched
+       [(null? dat) ;; no dat left, but maybe pat is at a 
                     ;; wildcard, in which case we're fine
         (and wild?
-             (reverse (cons (reverse collected) frame))))
-       (wild? ;; 1 symbol lookahead
+             (reverse (cons (reverse collected) frame)))]
+       [wild? ;; 1 symbol lookahead
         (let ((next-pat (if (pair? (cdr pat))
                             (cadr pat)
                             '())))
@@ -137,25 +140,27 @@ Fixes
           ;; next thing in dat is the next thing in pat
           (cond
            ;; ended on a *, just return the words.
-           ((null? next-pat) 
-            (reverse (cons dat frame)))
-           ((eq? next-pat (car dat))
+           [(null? next-pat) 
+            (reverse (cons dat frame))]
+           [(eq? next-pat (car dat))
             ;; ok, we're done with this wildcard
             (match (cddr pat) 
                    (cdr dat) 
                    '()
                    (cons
                     (reverse collected)
-                    frame)))
-           (else
-            (match pat (cdr dat) (cons (car dat) collected) frame)))))
-       ((eq? (car pat) (car dat))
-        (match (cdr pat) (cdr dat) '() frame))
+                    frame))]
+           [else
+            (match pat (cdr dat) (cons (car dat) collected) frame)]
+           ))]
+       [(eq? (car pat) (car dat))
+        (match (cdr pat) (cdr dat) '() frame)]
        ;; phew. finally we need to check if synonyms are involved.
-       ((and (synonym? (car pat))
+       [(and (synonym? (car pat))
              (memq (car dat) (synonyms-of (cadar pat))))
-        (match (cdr pat) (cdr dat) '() frame))
-       (else #f))))
+        (match (cdr pat) (cdr dat) '() frame)]
+       [else #f])))
+  (debug (list pat dat))
   (match pat dat '() '()))
 
 
@@ -191,8 +196,8 @@ Fixes
           (let ploop ((ps (hash-ref *KEYWORD-PATTERNS* (car kws))))
             (if (null? ps)
                 (kwloop (cdr kws)) ;; next kw
-                (let* ((pat (caar ps))
-                       (save? #f) ;; (and (pair? pat) (eq? (car pat) '$)) 
+                (let* ((pat (caar ps)) ;; caar is first of first
+                       (save? #f) 
                        (ms (destructure pat w)))
                   (if ms
                       (reassemble ((cadar ps)) 
@@ -283,8 +288,4 @@ Fixes
          define-synonyms
          define-pre-replacement
          define-post-replacement
-         define-dynamic-subst
-         ;; debug
-         pre-process-msg
-         post-process-msg
-         process)
+         define-dynamic-subst)
