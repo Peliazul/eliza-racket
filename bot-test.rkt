@@ -57,20 +57,28 @@
 (test-case
  "synonyms-of tests"
  (check-equal? (synonyms-of 'everyone)
-               '('everyone nobody noone)))
+               '(everyone nobody noone)))
 
 (test-case
  "destructure tests"
  (check-equal? (destructure '() '())
                '())
-;; (check-equal? (destructure '(*) '(apples and oranges))
-;;               '(will fail for now))
-;; (check-equal? (destructure '(* you *) '(you like noise))
-;;               '(will fail for now))
- (check-equal? (destructure '(* (@ everyone) *) '(nobody loves me))
-               '(will fail for now))
- (check-equal? (destructure '(* (@ everyone) *) '(everyone))
-               '(will fail for now))
+ (check-equal? (destructure '(apple) '(oranges and lemons))
+               #f)
+ (check-equal? (destructure '(*) '(apples and oranges))
+               '((apples and oranges)))
+ (check-equal? (destructure '(i am *) '(i love oranges))
+               #f)
+ (check-equal? (destructure '(i am *) '(i am human))
+               '((human)))
+ (check-equal? (destructure '(* you *) '(you like noise))
+               '(() (like noise)))
+ (check-equal? (destructure '(* you *) '(do you like noise))
+               '((do) (like noise)))
+ (check-equal? (destructure '((@ everyone) *) '(nobody loves me))
+               '((loves me)))
+ (check-equal? (destructure '((@ everyone) *) '(everyone))
+               '(()))
  )
 
 #|

@@ -57,7 +57,6 @@ Fixes
   (map car (sort-list-cadr (hash-ref-all weights words) >)))
 
 (define (synonyms-of base)
-  (debug base)
   (hash-ref *WORD-SYNONYMS* base '()))
 
 (define (post-replace x)
@@ -105,24 +104,27 @@ Fixes
     expr)))
 
 
-;;;; Destructure pattern into wildcard parts
 (define (destructure pat dat)
+  ;; Try to match up dat with specified pattern, returting #f if no match
+  ;; or returning unmatched parts of dat in the case of wildcards (true)
+  ;;
+  ;; pat is the pattern to match, like '(* you *)
+  ;; dat is the data input by the user, like '(you like noise)
+  ;;
+  ;; See bot-tests.rkt for examples of what this proc produces
+
   (define (wildcard? pat)
     (and (not (null? pat))
          (eq? (car pat) '*)))
   (define (synonym? pat)
     (and (not (null? pat))
          (pair? pat)
-         (pair? (car pat))
-         (eq? (caar pat) '@)))
+         (eq? (car pat) '@)))
   (define (match pat dat collected frame)
+    ;; collected is ???
+    ;; frame is ???
     (let ((wild? (wildcard? pat)))
-      ;; (format (current-output-port)
-      ;;         (string-append "   pat: ~a\n"
-      ;;                        "   dat: ~a\n"
-      ;;                        "   collected: ~a\n"
-      ;;                        "   frame: ~a\n======\n")
-      ;;         pat dat collected frame)
+      ;;(debug (list pat dat collected frame))
       (cond
        [(and (null? pat) (null? dat))
         ;; finished, so return frame
@@ -159,8 +161,10 @@ Fixes
        [(and (synonym? (car pat))
              (memq (car dat) (synonyms-of (cadar pat))))
         (match (cdr pat) (cdr dat) '() frame)]
-       [else #f])))
-  (debug (list pat dat))
+       [else
+        ;;(debug (car pat))
+        ;;(debug (synonym? (car pat)))
+        #f])))
   (match pat dat '() '()))
 
 
