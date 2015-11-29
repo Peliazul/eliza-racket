@@ -1,7 +1,8 @@
 #lang racket
 
-;; Adapted from...
-;; https://github.com/apg/chatter
+;; Original version copyright 2011, Andrew Gwozdziewycz web@apgwoz.com
+;; Changes copyright 2015, Eric Clack, eric@bn7.net
+;; This program is distributed under the terms of the GNU General Public License
 
 #|
 Fixes

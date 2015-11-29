@@ -1,5 +1,9 @@
 #lang racket
 
+;; Original version copyright 2011, Andrew Gwozdziewycz web@apgwoz.com
+;; Changes copyright 2015, Eric Clack, eric@bn7.net
+;; This program is distributed under the terms of the GNU General Public License
+
 (require rackunit "bot.rkt")
 (require/expose "bot.rkt" (pre-process-msg process destructure
                                            synonyms-of))
