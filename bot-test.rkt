@@ -35,7 +35,6 @@
 
 ;; -----------------------------------------------------------
 
-#|
 (test-case
  "pre-process-msg tests"
  (check-equal? (pre-process-msg "hello")
@@ -48,6 +47,7 @@
                '(perhaps))
  )
 
+#|
 (test-case
  "process tests"
  (check-equal? (process '(everyone))
@@ -61,6 +61,14 @@
 
 (test-case
  "destructure tests"
+ (check-equal? (destructure '(* you *) '(do you like noise))
+               '((do) (like noise)))
+
+ ;; Failing tests that should run...
+ ;; none :)
+ 
+ ;; Passing tests
+ 
  (check-equal? (destructure '() '())
                '())
  (check-equal? (destructure '(apple) '(oranges and lemons))
@@ -79,9 +87,10 @@
                '((loves me)))
  (check-equal? (destructure '((@ everyone) *) '(everyone))
                '(()))
- )
+ (check-equal? (destructure '(* (@ everyone) *) '(what about everyone but me))
+               '((what about) (but me)))
+)
 
-#|
 (test-case
  "respond-to tests"
  (check-equal? (respond-to "apple and banana")
@@ -99,7 +108,6 @@
 ;; (check-equal? (respond-to "everyone")
 ;;              "Surely not")
  )
-|#
 
 ;; Tests to do
 ;; synonyms

@@ -1,14 +1,19 @@
 #lang racket
 
-(require unstable/debug)
+;; Uncomment one of these lines...
+;;(require unstable/debug)
+(define (debug x) void)
 
 #|
 
-Fixes
-(make-hash-table 1024) becomes (make-hash)
-(sort-list ...) becomes (sort ...)
+Bugs (-- see tests too)
+
+look ahead in destructure doesn't seem to support synonyms
+-- but does it need to?
 
 |#
+
+
 
 (define *DYNAMIC-SUBSTITUTIONS* (make-hash))
 (define *KEYWORD-WEIGHTS* (make-hash))
@@ -120,11 +125,14 @@ Fixes
     (and (not (null? pat))
          (pair? pat)
          (eq? (car pat) '@)))
+  (define (a-synonym-of? word pat)
+    (memq word (synonyms-of (cadr pat))))
+  
   (define (match pat dat collected frame)
     ;; collected is ???
     ;; frame is ???
     (let ((wild? (wildcard? pat)))
-      ;;(debug (list pat dat collected frame))
+      (debug (list pat dat collected frame))
       (cond
        [(and (null? pat) (null? dat))
         ;; finished, so return frame
@@ -134,34 +142,40 @@ Fixes
                     ;; wildcard, in which case we're fine
         (and wild?
              (reverse (cons (reverse collected) frame)))]
-       [wild? ;; 1 symbol lookahead
+       [wild?
+        ;; 1 symbol lookahead - check if the next thing in
+        ;; pat (after the *) matches the head of dat
         (let ((next-pat (if (pair? (cdr pat))
                             (cadr pat)
                             '())))
-          ;; we're currently on wild, but we need to check to see if the 
-          ;; next thing in dat is the next thing in pat
+          (debug (list pat next-pat))
           (cond
-           ;; ended on a *, just return the words.
-           [(null? next-pat) 
+           [(null? next-pat)
+            ;; there's nothing more in pat, just return dat
             (reverse (cons dat frame))]
            [(eq? next-pat (car dat))
-            ;; ok, we're done with this wildcard
-            (match (cddr pat) 
-                   (cdr dat) 
-                   '()
-                   (cons
-                    (reverse collected)
-                    frame))]
+            ;; we have a match, so skip ahead two symbols in pat
+            ;; (the * and the next-pat) and the matching symbol in dat
+            (debug 1)
+            (match (cddr pat) (cdr dat) '()
+              (cons (reverse collected) frame))]
+           ;; TODO we must check for synonyms?
+           [(and (synonym? next-pat) (a-synonym-of? (car dat) next-pat))
+            (match (cddr pat) (cdr dat) '()
+              (cons (reverse collected) frame))]
            [else
+            ;; we don't have a match on next-symbol so keep
+            ;; the * in pat (so that it can match more of dat)
+            ;; and skip to the next symbol in dat.
+            (debug 2)
             (match pat (cdr dat) (cons (car dat) collected) frame)]
            ))]
-       [(eq? (car pat) (car dat))
-        (match (cdr pat) (cdr dat) '() frame)]
-       ;; phew. finally we need to check if synonyms are involved.
-       [(and (synonym? (car pat))
-             (memq (car dat) (synonyms-of (cadar pat))))
+       [(or (eq? (car pat) (car dat))
+            (and (synonym? (car pat)) (a-synonym-of? (car dat) (car pat))))
+        ;; A match so move on to next pat and dat
         (match (cdr pat) (cdr dat) '() frame)]
        [else
+        ;; No match, give up and return false
         ;;(debug (car pat))
         ;;(debug (synonym? (car pat)))
         #f])))
