@@ -4,9 +4,20 @@
 ;; Changes copyright 2015, Eric Clack, eric@bn7.net
 ;; This program is distributed under the terms of the GNU General Public License
 
-;; Uncomment one of these lines...
-;;(require unstable/debug)
-(define (debug x) void)
+(define-for-syntax DEBUGGING #f)
+
+(define-syntax (if-debug stx)
+  (syntax-case stx ()
+    ((_ debug-expr non-debug-expr)
+     (if DEBUGGING
+         #'debug-expr
+         #'non-debug-expr))))
+
+(if-debug
+   (require unstable/debug)
+   (define (debug x) void))
+
+(require racket/trace)
 
 #|
 
@@ -311,3 +322,7 @@ look ahead in destructure doesn't seem to support synonyms
          define-pre-replacement
          define-post-replacement
          define-dynamic-subst)
+
+(if-debug
+   (trace reassemble)
+   void)

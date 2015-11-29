@@ -4,6 +4,9 @@
 ;; Changes copyright 2015, Eric Clack, eric@bn7.net
 ;; This program is distributed under the terms of the GNU General Public License
 
+;; TODO
+;; "No he was" list-ref: index too large for list
+
 (require rackunit "bot.rkt")
 (require/expose "bot.rkt" (pre-process-msg process destructure
                                            synonyms-of))
@@ -27,7 +30,10 @@
 
 (define-keyword (was 2)
   ((* was i *)
-   (What if you were (% 2) ?)))
+   (What if you were (% 2) ?))
+  ((* i was *)
+   (Why do ou tell me you were (% 2) now ?)))
+
 
 (define-keyword (you)
   ((* you *)
@@ -51,12 +57,10 @@
                '(perhaps))
  )
 
-#|
 (test-case
  "process tests"
  (check-equal? (process '(everyone))
                '(Surely not)))
-|#
 
 (test-case
  "synonyms-of tests"
@@ -97,6 +101,13 @@
 
 (test-case
  "respond-to tests"
+
+ ;; Failing tests that should run...
+ (check-equal? (respond-to "I like you")
+               "")
+
+ ;; Passing tests...
+ 
  (check-equal? (respond-to "apple and banana")
                "A sentence for xnone")
  (check-equal? (respond-to "SORRY")
@@ -109,8 +120,8 @@
                "What if you were asleep ?")
  (check-equal? (respond-to "you like noise")
                "Oh, I like noise ?")
-;; (check-equal? (respond-to "everyone")
-;;              "Surely not")
+ (check-equal? (respond-to "everyone")
+               "Surely not")
  )
 
 ;; Tests to do
