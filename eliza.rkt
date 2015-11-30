@@ -18,7 +18,6 @@ TODO:
 (define-pre-replacement dreamt dreamed)
 (define-pre-replacement drneams dream)
 (define-pre-replacement maybe perhaps)
-(define-pre-replacement how what)
 (define-pre-replacement when what)
 (define-pre-replacement certainly yes)
 (define-pre-replacement machine computer)
@@ -38,6 +37,7 @@ TODO:
 (define-post-replacement my your)
 (define-post-replacement i\'m you are)
 
+;; -----------------------------------------------------------
 ;; TODO - do synonyms actually work?
 ;; They are only used with patterns like (@ family) in destructure
 
@@ -68,6 +68,10 @@ TODO:
 
 (define-synonyms (be) 
   (am is are was))
+
+;; -----------------------------------------------------------
+;; define-keyword (kw) or define-keyword (kw weight) to increase
+;; the chances of the keyword matching(?)
 
 (define-keyword (weather)
   ((* what is the weather *)
@@ -160,14 +164,20 @@ TODO:
 
 (define-keyword (espanol)
   ((*)
+   (No hablo espanol)
    ((goto xforeign))
    (I told you before\, I don\'t understand Spanish.)))
 
+(define-keyword (buenos)
+  ((buenos dias *)
+   (Lo siento\, no hablo español. Ingles por favor)
+   ))
 
 (define-keyword (xforeign)
   ((*)
    (I speak only English.)))
 
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 (define-keyword (hello)
   ((*)
@@ -405,6 +415,13 @@ TODO:
    ((goto what))))
 
 
+(define-keyword (how 2)
+  ((how do i *)
+   (How should I know ?)
+   (What have you tried to (% 1) ?)
+   (Can you think of anyone that you could ask for help ?)))
+
+
 (define-keyword (everyone 2)
   ((* (@ everyone) *)
    (Realy\, (% 2) ?)
@@ -457,6 +474,7 @@ TODO:
   ((* (@ be) *like *)
    ((goto alike))))
 
+;; -----------------------------------------------------------
 
 (define (get-input)
   (begin
