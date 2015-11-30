@@ -6,6 +6,8 @@
 
 ;; TODO
 ;; "No he was" list-ref: index too large for list
+;; ... pattern like (* this *) seems to match anything, something
+;; in destructure?
 
 (require rackunit "bot.rkt")
 (require/expose "bot.rkt" (pre-process-msg process destructure
@@ -32,7 +34,7 @@
   ((* was i *)
    (What if you were (% 2) ?))
   ((* i was *)
-   (Why do ou tell me you were (% 2) now ?)))
+   (Why do you tell me you were (% 2) now ?)))
 
 
 (define-keyword (you)
@@ -69,11 +71,10 @@
 
 (test-case
  "destructure tests"
- (check-equal? (destructure '(* you *) '(do you like noise))
-               '((do) (like noise)))
 
- ;; Failing tests that should run...
- ;; none :)
+ ;; Failing tests that should pass...
+ (check-equal? (destructure '(* i was *) '(fred liked fruit))
+               #f)
  
  ;; Passing tests
  
@@ -103,7 +104,7 @@
  "respond-to tests"
 
  ;; Failing tests that should run...
- (check-equal? (respond-to "I like you")
+ (check-equal? (respond-to "no he was")
                "")
 
  ;; Passing tests...

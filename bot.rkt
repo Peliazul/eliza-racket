@@ -19,17 +19,6 @@
 
 (require racket/trace)
 
-#|
-
-Bugs (-- see tests too)
-
-look ahead in destructure doesn't seem to support synonyms
--- but does it need to?
-
-|#
-
-
-
 (define *DYNAMIC-SUBSTITUTIONS* (make-hash))
 (define *KEYWORD-WEIGHTS* (make-hash))
 (define *KEYWORD-PATTERNS* (make-hash))
