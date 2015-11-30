@@ -135,7 +135,8 @@
   (define (match pat dat collected frame)
     ;; collected is ???
     ;; frame is ???
-    (let ((wild? (wildcard? pat)))
+    (let ((wild? (wildcard? pat))
+          (last-pat? (= (length pat) 1)))
       (debug (list pat dat collected frame))
       (cond
        [(and (null? pat) (null? dat))
@@ -144,8 +145,9 @@
        [(null? pat) #f] ;; we've got dat left unmatched
        [(null? dat) ;; no dat left, but maybe pat is at a 
                     ;; wildcard, in which case we're fine
-        (and wild?
-             (reverse (cons (reverse collected) frame)))]
+        (if (and wild? last-pat?)
+            (reverse (cons (reverse collected) frame))
+            #f)]
        [wild?
         ;; 1 symbol lookahead - check if the next thing in
         ;; pat (after the *) matches the head of dat
@@ -179,9 +181,7 @@
         ;; A match so move on to next pat and dat
         (match (cdr pat) (cdr dat) '() frame)]
        [else
-        ;; No match, give up and return false
-        ;;(debug (car pat))
-        ;;(debug (synonym? (car pat)))
+        ;; No match, so return false
         #f])))
   (match pat dat '() '()))
 
@@ -313,5 +313,5 @@
          define-dynamic-subst)
 
 (if-debug
-   (trace reassemble)
+   (trace destructure reassemble)
    void)

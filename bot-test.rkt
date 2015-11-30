@@ -5,9 +5,7 @@
 ;; This program is distributed under the terms of the GNU General Public License
 
 ;; TODO
-;; "No he was" list-ref: index too large for list
-;; ... pattern like (* this *) seems to match anything, something
-;; in destructure?
+;; Something about removing punctuation (? ! ,) etc
 
 (require rackunit "bot.rkt")
 (require/expose "bot.rkt" (pre-process-msg process destructure
@@ -104,11 +102,11 @@
  "respond-to tests"
 
  ;; Failing tests that should run...
- (check-equal? (respond-to "no he was")
-               "")
 
  ;; Passing tests...
  
+ (check-equal? (respond-to "no he was")
+               "A sentence for xnone")
  (check-equal? (respond-to "apple and banana")
                "A sentence for xnone")
  (check-equal? (respond-to "SORRY")

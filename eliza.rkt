@@ -5,13 +5,6 @@
 ;; This program is distributed under the terms of the GNU General Public License
 
 #|
-Fixes
-  (format (current-output-port) "bye!\n")
-becomes
-  (display (format "bye!\n))
-
-' becomes \' in defs
-
 TODO:
 > weather -- something to do with dynsubs?
 |#
@@ -46,6 +39,7 @@ TODO:
 (define-post-replacement i\'m you are)
 
 ;; TODO - do synonyms actually work?
+;; They are only used with patterns like (@ family) in destructure
 
 (define-synonyms (hello)
   (hello hi hola howdy hiya))
