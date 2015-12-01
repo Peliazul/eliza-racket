@@ -419,7 +419,8 @@ TODO:
   ((how do i *)
    (How should I know ?)
    (What have you tried to (% 1) ?)
-   (Can you think of anyone that you could ask for help ?)))
+   (Can you think of anyone that you could ask for help ?)
+   (Do you think other people know how to (% 1) ?)))
 
 
 (define-keyword (everyone 2)
