@@ -8,9 +8,10 @@
 
 (require rackunit "bot.rkt")
 (require/expose "bot.rkt" (pre-process-msg process destructure
-                                           synonyms-of relevant-keywords
-                                           *KEYWORD-WEIGHTS* *KEYWORD-PATTERNS*
-                                           remove-punctuation make-cycled-list))
+                           synonyms-of relevant-keywords
+                           *KEYWORD-WEIGHTS* *KEYWORD-PATTERNS*
+                           remove-punctuation make-cycled-list
+                           make-random-list))
 
 (define-pre-replacement maybe perhaps)
 
@@ -72,6 +73,22 @@
 )
 
 (test-case
+ "make-random-list tests"
+ (define lst '(1 2 3 4 5))
+ (define c (make-random-list lst))
+ (define (in-lst? i) (member i lst))
+   
+ (check-pred in-lst? (c))
+ (check-pred in-lst? (c))
+ (check-pred in-lst? (c))
+ (check-pred in-lst? (c))
+ (check-pred in-lst? (c))
+
+ ;; Check we don't always get the same value
+ (check-false (= (c) (c) (c) (c) (c) (c)))
+)
+
+(test-case
  "pre-process-msg tests"
  (check-equal? (pre-process-msg "hello")
                '(hello))
@@ -90,13 +107,15 @@
  (check-equal? (process '(everyone))
                '(Surely not))
 
- ;; Test sequence of calls
- (check-equal? (process '(chicken))
-               '(one chicken ?))
- (check-equal? (process '(chicken))
-               '(two chickens ?))
- (check-equal? (process '(chicken))
-               '(three chickens ?)))
+ ;; Test sequence of calls ... now random
+ (define lst '((one chicken ?) (two chickens ?) (three chickens ?)))
+ (define (in-lst? x) (member x lst))
+ 
+ (check-pred in-lst? (process '(chicken)))
+ (check-pred in-lst? (process '(chicken)))
+ (check-pred in-lst? (process '(chicken)))
+ (check-pred in-lst? (process '(chicken)))
+)
 
 (test-case
  "synonyms-of tests"

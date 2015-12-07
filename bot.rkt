@@ -27,7 +27,6 @@
 (define *PRE-REPLACEMENTS* (make-hash))
 
 
-;;;; TODO: turn this into a cycled stream
 (define (make-cycled-list lst)
   (lambda ()
     ;; Return the first item, then move it to the end of the list
@@ -35,6 +34,10 @@
            (new (append (cdr lst) (list first))))
       (set! lst new)
       first)))
+
+(define (make-random-list lst)
+  (lambda ()
+    (first (shuffle lst))))
 
 ;;;; sort keys by their cadr
 (define (sort-list-cadr lofv cmpfn)
@@ -255,7 +258,7 @@
                         (lambda (pattern)
                           (let ((pat (car pattern))
                                 (assems (cdr pattern)))
-                            (list pat (make-cycled-list assems))))
+                            (list pat (make-random-list assems))))
                         (reverse patterns))))))
 
 

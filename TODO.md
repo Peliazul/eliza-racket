@@ -1,16 +1,12 @@
 Eliza for Racket - To Do
 ------------------------
 
-* "bye" "quit" etc
-  (define end-phrases '(bye goodbye seeya adios))
-
-* Understand and recode `process` -- does it need continuations?
-
-* Make the responses random
+* Rework keywords -- e.g. "am" is a bit simple and clashes with "I"
 
 * Phrases for repeating yourself
 
 * Earlier you mentioned...
+
 
 Later
 -----
@@ -26,3 +22,11 @@ Done
 ----
 
 * Make "hi" work like "hello"
+
+* "bye" "quit" etc -- `(define END-PHRASES '(bye goodbye adios))`
+
+* Understand and recode `process` -- does it need continuations?
+  Yes for now, for ((goto ...)) keywords
+
+* Make the responses random
+
