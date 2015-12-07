@@ -10,7 +10,7 @@
 (require/expose "bot.rkt" (pre-process-msg process destructure
                                            synonyms-of relevant-keywords
                                            *KEYWORD-WEIGHTS* *KEYWORD-PATTERNS*
-                                           remove-punctuation))
+                                           remove-punctuation make-cycled-list))
 
 (define-pre-replacement maybe perhaps)
 
@@ -59,6 +59,17 @@
                '())
  (check-pred procedure? (cadar (hash-ref *KEYWORD-PATTERNS* 'everyone)))
  )
+
+(test-case
+ "make-cycled-list tests"
+ (define c (make-cycled-list '(1 2 3 4 5)))
+ (check-equal? (c) 1)
+ (check-equal? (c) 2)
+ (check-equal? (c) 3)
+ (check-equal? (c) 4)
+ (check-equal? (c) 5)
+ (check-equal? (c) 1)
+)
 
 (test-case
  "pre-process-msg tests"

@@ -30,6 +30,7 @@
 ;;;; TODO: turn this into a cycled stream
 (define (make-cycled-list lst)
   (lambda ()
+    ;; Return the first item, then move it to the end of the list
     (let* ((first (car lst))
            (new (append (cdr lst) (list first))))
       (set! lst new)
@@ -218,6 +219,9 @@
 (define (process w)
   (let ((kws (append (or (relevant-keywords *KEYWORD-WEIGHTS* w) '()) 
                      '(xnone))))
+    ;; The call/cc goto-handler allows reassemble to restart keyword
+    ;; processing right back here if it finds a gogo keyword phrase
+    ;; like this ((goto xforeign))
     (define goto-handler #f)
     (let kwloop ((kws (call/cc 
                        (lambda (gfn) (set! goto-handler gfn) kws))))

@@ -479,7 +479,7 @@ TODO:
 ;; -----------------------------------------------------------
 
 (define END-PHRASES
-  '(bye adios goodbye))
+  '(bye adios goodbye quit))
 
 (define (get-input)
   (begin
