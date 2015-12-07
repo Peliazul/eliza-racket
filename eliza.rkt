@@ -26,6 +26,7 @@ TODO:
 (define-pre-replacement you\'re you are)
 (define-pre-replacement i\'m i am)
 (define-pre-replacement same alike)
+(define-pre-replacement hi hello)
 
 (define-post-replacement am are)
 (define-post-replacement your my)
@@ -477,10 +478,17 @@ TODO:
 
 ;; -----------------------------------------------------------
 
+(define END-PHRASES
+  '(bye adios goodbye))
+
 (define (get-input)
   (begin
     (display "you> ")
     (read-line)))
+
+(define (end-of-input? i)
+  (or (eof-object? i)
+      (member (string->symbol i) END-PHRASES)))
 
 (define (main)
   (define (output foo)
@@ -489,7 +497,7 @@ TODO:
   (display (format
             "Hi, I'm Eliza bot. Type stuff, and I'll respond\n"))
   (let loop ((lin (get-input)))
-    (if (eof-object? lin)
+    (if (end-of-input? lin)
         (display (format "bye!\n"))
         (begin
           (output (respond-to lin))
