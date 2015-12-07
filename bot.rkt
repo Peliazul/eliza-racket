@@ -84,6 +84,16 @@
 (define (string->thing x)
   (with-input-from-string x read))
 
+(define (remove-punctuation s)
+  (let loop ((s s)
+             (punc '(? ! \, \.)))
+    (cond
+      [(null? punc) s]
+      [else
+       (loop (string-replace s (symbol->string (car punc)) "")
+             (cdr punc))]
+      )))
+
 
 ;;;; reassembles the reassembly by evaluating the things to do
 ;;;; TODO: reassemble an assembly so that we can generate goto's dynamically
@@ -189,7 +199,8 @@
 (define (pre-process-msg m)
   (flatten 
    (map (compose pre-replace string->symbol)
-        (string-split (string-downcase m)))))
+        (string-split (string-downcase (remove-punctuation m))))
+   ))
 
 
 (define (post-process-msg w)
@@ -205,14 +216,11 @@
 ;;; Complications: goto, patterns that have no match, goto sentinel xnone
 ;;; Solution: continuations!
 (define (process w)
-  (let ((kws (append (or (relevant-keywords *KEYWORD-WEIGHTS* w) 
-                         '()) 
+  (let ((kws (append (or (relevant-keywords *KEYWORD-WEIGHTS* w) '()) 
                      '(xnone))))
     (define goto-handler #f)
     (let kwloop ((kws (call/cc 
-                       (lambda (gfn)
-                         (set! goto-handler gfn)
-                         kws))))
+                       (lambda (gfn) (set! goto-handler gfn) kws))))
       (if (null? kws)
           '(i have no idea what you want)
           (let ploop ((ps (hash-ref *KEYWORD-PATTERNS* (car kws))))
@@ -222,7 +230,7 @@
                        (save? #f) 
                        (ms (destructure pat w)))
                   (if ms
-                      (reassemble ((cadar ps)) 
+                      (reassemble ((cadar ps)) ;; call the proc from above call/cc and include results
                                   *DYNAMIC-SUBSTITUTIONS*
                                   ms
                                   goto-handler)

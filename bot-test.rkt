@@ -9,7 +9,9 @@
 
 (require rackunit "bot.rkt")
 (require/expose "bot.rkt" (pre-process-msg process destructure
-                                           synonyms-of))
+                                           synonyms-of relevant-keywords
+                                           *KEYWORD-WEIGHTS* *KEYWORD-PATTERNS*
+                                           remove-punctuation))
 
 (define-pre-replacement maybe perhaps)
 
@@ -34,7 +36,6 @@
   ((* i was *)
    (Why do you tell me you were (% 2) now ?)))
 
-
 (define-keyword (you)
   ((* you *)
    (Oh\, I (% 2) ?)))
@@ -43,7 +44,22 @@
   ((* (@ everyone) *)
    (Surely not (% 2))))
 
+(define-keyword (chicken)
+  ((*)
+   (one chicken ?)
+   (two chickens ?)
+   (three chickens ?)))
+
 ;; -----------------------------------------------------------
+
+(test-case
+ "relevant-keywords tests"
+ (check-equal? (relevant-keywords *KEYWORD-WEIGHTS* '(chicken was here))
+               '(was chicken))
+ (check-equal? (relevant-keywords *KEYWORD-WEIGHTS* '(i like apples))
+               '())
+ (check-pred procedure? (cadar (hash-ref *KEYWORD-PATTERNS* 'everyone)))
+ )
 
 (test-case
  "pre-process-msg tests"
@@ -60,7 +76,15 @@
 (test-case
  "process tests"
  (check-equal? (process '(everyone))
-               '(Surely not)))
+               '(Surely not))
+
+ ;; Test sequence of calls
+ (check-equal? (process '(chicken))
+               '(one chicken ?))
+ (check-equal? (process '(chicken))
+               '(two chickens ?))
+ (check-equal? (process '(chicken))
+               '(three chickens ?)))
 
 (test-case
  "synonyms-of tests"
@@ -71,8 +95,6 @@
  "destructure tests"
 
  ;; Failing tests that should pass...
- (check-equal? (destructure '(* i was *) '(fred liked fruit))
-               #f)
  
  ;; Passing tests
  
@@ -96,6 +118,8 @@
                '(()))
  (check-equal? (destructure '(* (@ everyone) *) '(what about everyone but me))
                '((what about) (but me)))
+ (check-equal? (destructure '(* i was *) '(fred liked fruit))
+               #f)
 )
 
 (test-case
@@ -123,6 +147,12 @@
                "Surely not")
  )
 
+(test-case
+ "remove-punctuation tests"
+ (check-equal? (remove-punctuation "hello? how are you?")
+               "hello how are you")
+ )
+ 
 ;; Tests to do
 ;; synonyms
 ;; everyone
