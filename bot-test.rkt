@@ -5,7 +5,6 @@
 ;; This program is distributed under the terms of the GNU General Public License
 
 ;; TODO
-;; Something about removing punctuation (? ! ,) etc
 
 (require rackunit "bot.rkt")
 (require/expose "bot.rkt" (pre-process-msg process destructure
@@ -70,6 +69,8 @@
  (check-equal? (pre-process-msg "apples AND oranges")
                '(apples and oranges))
  (check-equal? (pre-process-msg "maybe")
+               '(perhaps))
+ (check-equal? (pre-process-msg "maybe?")
                '(perhaps))
  )
 
@@ -151,6 +152,10 @@
  "remove-punctuation tests"
  (check-equal? (remove-punctuation "hello? how are you?")
                "hello how are you")
+ (check-equal? (remove-punctuation "hey! how are you?")
+               "hey how are you")
+ (check-equal? (remove-punctuation "hey! how are you... feeling better, I hope")
+               "hey how are you feeling better I hope")
  )
  
 ;; Tests to do
