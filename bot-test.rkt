@@ -34,7 +34,10 @@
   ((* was i *)
    (What if you were (% 2) ?))
   ((* i was *)
-   (Why do you tell me you were (% 2) now ?)))
+   (Why do you tell me you were (% 2) now ?))
+  ((*)
+   (Why do you say \'was\'))
+  )
 
 (define-keyword (you)
   ((* you *)
@@ -107,6 +110,13 @@
  (check-equal? (process '(everyone))
                '(Surely not))
 
+ (check-equal? (process '(was i bad))
+               '(What if you were bad ?))
+ (check-equal? (process '(i was bad))
+               '(Why do you tell me you were bad now ?))
+ (check-equal? (process '(was was was))
+               '(Why do you say |'was'|))
+
  ;; Test sequence of calls ... now random
  (define lst '((one chicken ?) (two chickens ?) (three chickens ?)))
  (define (in-lst? x) (member x lst))
@@ -160,7 +170,7 @@
 
  ;; Passing tests...
  
- (check-equal? (respond-to "no he was")
+ (check-equal? (respond-to "no he wasn't")
                "A sentence for xnone")
  (check-equal? (respond-to "apple and banana")
                "A sentence for xnone")

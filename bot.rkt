@@ -103,7 +103,7 @@
 ;;;; TODO: reassemble an assembly so that we can generate goto's dynamically
 ;;;; reassemble needs an escape procedure such that when a goto occurs
 ;;;; it can restart
-(define (reassemble expr dynsubs vars goto-handler)
+(define (reassemble expr dynsubs vars restart-with-new-kws)
   (flatten
    (map 
     (lambda (x)
@@ -113,7 +113,7 @@
             (cond
              ;; if goto found, invoke the goto-handler with a new list
              ;; of keywords to search (in this case only 1)
-             ((eq? operator 'goto) (goto-handler (list (car args))))
+             ((eq? operator 'goto) (restart-with-new-kws (list (car args))))
              ((eq? operator '>) 
               (let ((dyn-subst (hash-ref dynsubs
                                          (car args))))
@@ -225,9 +225,9 @@
     ;; The call/cc goto-handler allows reassemble to restart keyword
     ;; processing right back here if it finds a gogo keyword phrase
     ;; like this ((goto xforeign))
-    (define goto-handler #f)
+    (define restart-with-new-kws #f)
     (let kwloop ((kws (call/cc 
-                       (lambda (gfn) (set! goto-handler gfn) kws))))
+                       (lambda (return) (set! restart-with-new-kws return) kws))))
       (if (null? kws)
           '(i have no idea what you want)
           (let ploop ((ps (hash-ref *KEYWORD-PATTERNS* (car kws))))
@@ -240,7 +240,7 @@
                       (reassemble ((cadar ps)) ;; call the proc from above call/cc and include results
                                   *DYNAMIC-SUBSTITUTIONS*
                                   ms
-                                  goto-handler)
+                                  restart-with-new-kws)
                       (ploop (cdr ps))))))))))
 
 
@@ -250,16 +250,21 @@
 
 
 (define (add-patterns! keyword patterns)
+  ;; Each keyword maps to a list of pairs (pattern phrase-proc)
+  ;; where phrase-proc returns a random phrase 
   (let ((existing (hash-ref *KEYWORD-PATTERNS* keyword '())))
+    (debug (list keyword patterns))
     (hash-set! *KEYWORD-PATTERNS* 
                keyword
-               (append existing 
+               (append existing
                        (map 
                         (lambda (pattern)
                           (let ((pat (car pattern))
                                 (assems (cdr pattern)))
                             (list pat (make-random-list assems))))
-                        (reverse patterns))))))
+                        patterns)
+                       ))
+    ))
 
 
 (define (add-synonyms! word syns)

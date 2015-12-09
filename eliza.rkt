@@ -10,6 +10,12 @@ TODO:
 |#
 
 (require "bot.rkt")
+(require rackunit "bot.rkt")
+(require/expose "bot.rkt" (pre-process-msg process destructure
+                           synonyms-of relevant-keywords
+                           *KEYWORD-WEIGHTS* *KEYWORD-PATTERNS*
+                           remove-punctuation make-cycled-list
+                           make-random-list))
 
 (define-pre-replacement dont don\'t)
 (define-pre-replacement cant can\'t)
@@ -39,11 +45,8 @@ TODO:
 (define-post-replacement i\'m you are)
 
 ;; -----------------------------------------------------------
-;; TODO - do synonyms actually work?
-;; They are only used with patterns like (@ family) in destructure
-
-(define-synonyms (hello)
-  (hello hi hola howdy hiya))
+;; Synonyms are only used with patterns like (@ family) in
+;; keywords
 
 (define-synonyms (belief)
   (feel think believe wish))
@@ -196,6 +199,9 @@ TODO:
    (What do you think about machines ?)))
 
 
+#|
+Clashes with (i)
+
 (define-keyword (am)
   ((* am i *)
    (Do you believe you are (% 2) ?)
@@ -206,7 +212,7 @@ TODO:
   ((*)
    (Why do you say \'am\' ?)
    (I don\'t understand that.)))
-
+|#
 
 (define-keyword (are)
   ((* are you *)
@@ -258,12 +264,12 @@ TODO:
    (What if you never got (% 3) ?)
    (What would getting (% 3) mean to you ?)
    (What does wanting (% 3) have to do with this discussion ?))
-  ((* i am* (@ sad) *)
+  ((* i am (@ sad) *)
    (I am sorry to hear that you are (% 3))
    (Do you think that coming here will help you not to be (% 3) ?)
    (I\'m sure it\'s not pleasant to be (% 3))
    (Can you explain what made you (% 3) ?))
-  ((* i am* (@ happy) *)
+  ((* i am (@ happy) *)
    (How have I helped you to be (% 3) ?)
    (Has your treatment made you (% 3) ?)
    (What makes you (% 3) just now ?)
@@ -353,7 +359,7 @@ TODO:
    (Earlier you said your (% 2))
    (But your (% 2))
    (Does that have anything to do with the fact that your (% 2) ?))
-  ((* my* (@ family) *)
+  ((* my (@ family) *)
    (Tell me more about your family.)
    (Who else in your family (% 4) ?)
    (Your (% 3) ?)
@@ -475,6 +481,12 @@ TODO:
 (define-keyword (like 10)
   ((* (@ be) *like *)
    ((goto alike))))
+
+(define-keyword (school 5)
+  ((*)
+   (Tell me about your school)
+   (Are you worried about your school work ?)
+   (Tell me about your school friends)))
 
 ;; -----------------------------------------------------------
 

@@ -3,9 +3,9 @@ Eliza for Racket - To Do
 
 * Rework keywords -- e.g. "am" is a bit simple and clashes with "I"
 
-* Phrases for repeating yourself
+* Phrases when user repeats themselves
 
-* Earlier you mentioned...
+* Earlier you mentioned... - 
 
 
 Later
@@ -29,4 +29,8 @@ Done
   Yes for now, for ((goto ...)) keywords
 
 * Make the responses random
+
+* ((* i am* (@ sad) *) doesn't work
+
+* In keywords final (*) seems to beat all others
 
